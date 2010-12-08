@@ -12,7 +12,7 @@ function Strip(S: String): String;
 
 procedure DeleteArrayItem(var X: TStringDynArray; const Index: Integer);
 procedure AddString(var A: TStringDynArray; S: String);
-function Split(S: String; Delim: Char): TStringDynArray;
+function Split(S: String; Delim: Char; Limit: Integer = MaxInt): TStringDynArray;
 function SplitLines(S: String): TStringDynArray;
 function Join(Strings: TStringDynArray; Delim: String): String;
 function StringMatch(Strings: TStringDynArray; S: String): Boolean;
@@ -80,16 +80,26 @@ begin
   A[High(A)] := S;
 end;
 
-function Split(S: String; Delim: Char): TStringDynArray;
+function Split(S: String; Delim: Char; Limit: Integer = MaxInt): TStringDynArray;
+var
+  P: Integer;
 begin
   Result := nil;
   if S='' then Exit;
-  S := S + Delim;
-  while S<>'' do
+  while True do
   begin
     SetLength(Result, Length(Result)+1);
-    Result[High(Result)] := Copy(S, 1, Pos(Delim, S)-1);
-    Delete(S, 1, Pos(Delim, S));
+    P := Pos(Delim, S);
+    if (P=0) or (Length(Result) = Limit) then
+    begin
+      Result[High(Result)] := S;
+      Exit
+    end
+    else
+    begin
+      Result[High(Result)] := Copy(S, 1, P-1);
+      Delete(S, 1, P);
+    end;
   end;
 end;
 
