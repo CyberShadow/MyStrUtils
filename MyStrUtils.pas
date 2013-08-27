@@ -6,9 +6,11 @@ uses
   Types;
 
 function Right(S: String; Count: Integer): String;
+function StartsWith(S, Head: String): Boolean;
 function EndsWith(S, Tail: String): Boolean;
 function ChompLeft(S, Left: String): String;
 function Strip(S: String): String;
+function PadLeft(S: String; C: Char; L: Integer): String;
 
 procedure DeleteArrayItem(var X: TStringDynArray; const Index: Integer);
 procedure AddString(var A: TStringDynArray; S: String);
@@ -42,6 +44,11 @@ begin
     Result := Copy(S, Length(S)-Count+1, Count);
 end;
 
+function StartsWith(S, Head: String): Boolean;
+begin
+  Result := Copy(S, 1, Length(Head))=Head;
+end;
+
 function EndsWith(S, Tail: String): Boolean;
 begin
   Result := Copy(S, Length(S)-Length(Tail)+1, Length(Tail))=Tail;
@@ -60,6 +67,13 @@ begin
     Delete(S, 1, 1);
   while (Length(S)>0) and (S[Length(S)] in [#13, #10, #9, ' ']) do
     SetLength(S, Length(S)-1);
+  Result := S;
+end;
+
+function PadLeft(S: String; C: Char; L: Integer): String;
+begin
+  while Length(S) < L do
+    S := C + S;
   Result := S;
 end;
 
@@ -103,7 +117,7 @@ begin
   end;
 end;
 
-function SplitLines(S: String): TStringDynArray;
+function SplitLines(S: AnsiString): TStringDynArray;
 var
   I: Integer;
 begin
